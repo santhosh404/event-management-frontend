@@ -1,7 +1,7 @@
 import React from "react";
 import { Layout, Menu, Avatar, Dropdown, Divider, Button } from "antd";
-import { UserOutlined, LogoutOutlined, CalendarOutlined, LoginOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { UserOutlined, LogoutOutlined, CalendarOutlined, LoginOutlined, PlusOutlined } from "@ant-design/icons";
+import { Link, useNavigate } from "react-router-dom";
 
 const { Header } = Layout;
 
@@ -36,29 +36,40 @@ const Navbar = () => {
         <Header className="bg-white flex justify-between items-center shadow-md px-6">
             {/* Logo */}
             <div className="text-xl font-bold">
-                <h1 src="/logo.png" alt="Logo" className="h-8"> ∞ InfinityEvents.com</h1>
+                <Link to={'/'} alt="Logo" className="h-8"> ∞ InfinityEvents.com</Link>
             </div>
 
             {/* Avatar Dropdown */}
-            {
-                sessionStorage.getItem('USER_AUTH_TOKEN') && sessionStorage.getItem('USER_AUTH_ROLE') ? (
-                    <Dropdown
-                        menu={{ items, }}
-                        trigger={['click']}
-                        placement="bottomRight"
-                    >
-                        <Avatar
-                            size="large"
-                            icon={<UserOutlined />}
-                            className="cursor-pointer"
-                        />
-                    </Dropdown>) : (
-                    <Button color="primary" className="flex items-center gap-2" onClick={() => navigate('/sign-in')}>
-                        <LoginOutlined />
-                        <span className="text-sm">Login</span>
-                    </Button>
-                )
-            }
+            <div className="flex items-center gap-5">
+                {
+                    sessionStorage.getItem('USER_AUTH_TOKEN') && sessionStorage.getItem('USER_AUTH_ROLE') === "admin" && (
+                        <Button type="primary" onClick={() => navigate('/add-event')}>
+                            <PlusOutlined />
+                            Add Event
+                        </Button>
+                    )
+                }
+                {
+                    sessionStorage.getItem('USER_AUTH_TOKEN') && sessionStorage.getItem('USER_AUTH_ROLE') ? (
+                        <Dropdown
+                            menu={{ items, }}
+                            trigger={['click']}
+                            placement="bottomRight"
+                        >
+                            <Avatar
+                                size="large"
+                                icon={<UserOutlined />}
+                                className="cursor-pointer"
+                            />
+                        </Dropdown>) : (
+                        <Button color="primary" className="flex items-center gap-2" onClick={() => navigate('/sign-in')}>
+                            <LoginOutlined />
+                            <span className="text-sm">Login</span>
+                        </Button>
+                    )
+                }
+            </div>
+
 
         </Header>
     );

@@ -1,3 +1,4 @@
+import AddEvent from './pages/admin/AddEvent';
 import ForgotPassword from './pages/auth/ForgotPassword'
 import SignIn from './pages/auth/SignIn'
 import Signup from './pages/auth/SignUp'
@@ -25,4 +26,11 @@ export const publicRoutes = [
     //     path: 'reset-password',
     //     component:
     // }
+];
+
+export const privateRoutes = [
+    { 
+        path: '/add-event', 
+        component: AddEvent
+    }
 ]

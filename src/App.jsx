@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import Navbar from './components/resuable/Navbar'
-import { publicRoutes } from './routes'
+import { privateRoutes, publicRoutes } from './routes'
 
 function App() {
 
@@ -9,6 +9,10 @@ function App() {
       <Routes>
         {
           publicRoutes.map((route, index) => <Route key={index} element={<route.component />} path={route.path} />)
+        }
+
+        {
+          privateRoutes.map((route, index) => <Route key={index} element={<route.component />} path={route.path} />)
         }
       </Routes>
     </>

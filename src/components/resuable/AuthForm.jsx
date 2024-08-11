@@ -2,7 +2,7 @@ import React from 'react';
 import { Form, Input, Button, Checkbox } from 'antd';
 import { Link } from 'react-router-dom';
 
-const AuthForm = ({ type, onFinish }) => {
+const AuthForm = ({ type, onFinish, loading }) => {
     return (
         <div className="max-w-md mx-auto bg-white p-6 shadow-lg rounded-md">
             <h2 className="text-2xl font-[900] text-center mb-4">
@@ -59,7 +59,7 @@ const AuthForm = ({ type, onFinish }) => {
 
 
                 <Form.Item>
-                    <Button type="primary" htmlType="submit" className="w-full">
+                    <Button type="primary" htmlType="submit" className="w-full" loading={loading}>
                         {type === 'signup' ? 'Sign Up' : 'Sign In'}
                     </Button>
                 </Form.Item>
