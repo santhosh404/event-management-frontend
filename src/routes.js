@@ -2,6 +2,7 @@ import AddEvent from './pages/admin/AddEvent';
 import ForgotPassword from './pages/auth/ForgotPassword'
 import SignIn from './pages/auth/SignIn'
 import Signup from './pages/auth/SignUp'
+import EventDetail from './pages/EventDetail';
 import Home from './pages/Home'
 
 export const publicRoutes = [
@@ -32,5 +33,9 @@ export const privateRoutes = [
     { 
         path: '/add-event', 
         component: AddEvent
-    }
+    },
+    {
+        path: 'event/:id',
+        component: EventDetail
+    }, 
 ]
