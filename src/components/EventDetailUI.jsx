@@ -3,13 +3,20 @@ import { Card, Button, Modal, InputNumber } from 'antd';
 import { CalendarOutlined, EnvironmentOutlined, WalletOutlined } from '@ant-design/icons';
 import EventGuideCard from './EventGuideCard';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import TagOutlined from "../assets/tag.svg";
 
 const EventDetailUI = ({ event }) => {
+    const navigate = useNavigate(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [ticketQuantity, setTicketQuantity] = useState(1);
 
-    const showModal = () => {
-        setIsModalVisible(true);
+    const handleBuyNow = () => {
+        if (sessionStorage.getItem('USER_AUTH_TOKEN') && sessionStorage.getItem('USER_AUTH_ROLE')) {
+            setIsModalVisible(true);
+            return;
+        }
+        navigate('/sign-in')
     };
 
     const handleCancel = () => {
@@ -26,7 +33,7 @@ const EventDetailUI = ({ event }) => {
         <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.9 }}
         >
             <div className="max-w-[1400px] mx-auto mb-10 mt-24 flex flex-col md:flex-row justify-between items-start gap-10 p-5">
                 {/* Left Side - Poster Image and Description */}
@@ -50,6 +57,10 @@ const EventDetailUI = ({ event }) => {
                     <Card className="w-full max-w-[500px] shadow-lg">
                         <h2 className="text-2xl font-bold mb-4">{event.title}</h2>
                         <div className="flex items-center gap-3 mb-3">
+                            <img src={TagOutlined} />
+                            <span className="text-md text-gray-600">{event.tag}</span>
+                        </div>
+                        <div className="flex items-center gap-3 mb-3">
                             <CalendarOutlined className="text-lg" />
                             <span className="text-md text-gray-600">{event.date} | {event.time}</span>
                         </div>
@@ -62,7 +73,7 @@ const EventDetailUI = ({ event }) => {
                                 <WalletOutlined className="text-lg" />
                                 <span className="text-xl font-bold">₹ {event.price} Onwards</span>
                             </div>
-                            <Button type="primary" onClick={showModal}>Buy Now</Button>
+                            <Button type="primary" onClick={handleBuyNow}>Buy Now</Button>
                         </div>
                     </Card>
                     <EventGuideCard />

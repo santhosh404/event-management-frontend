@@ -10,7 +10,7 @@ const DisplayEventCard = ({ eventData }) => {
         <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.9 }}
         >
             <Card
                 hoverable
@@ -45,7 +45,7 @@ const DisplayEventCard = ({ eventData }) => {
                         <WalletOutlined className="mr-2" />
                         <span>₹ {eventData.price}</span>
                     </div>
-                    <Button type="secondary" size="large" href="#buy-now">
+                    <Button type="secondary" size="large">
                         Buy Now
                     </Button>
                 </div>

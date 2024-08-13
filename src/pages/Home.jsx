@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../components/resuable/Navbar'
-import { getAllEventsService } from '../services/eventServices'
+import { getAllEventsService, getEventByTagService } from '../services/eventServices'
 import { message, Tag } from 'antd';
 import EventCard from '../components/resuable/EventCard';
 import {
@@ -34,8 +34,19 @@ export default function Home() {
         message.error(err.message);
       }
     }
+    async function getEventsUsingTags() {
+      try {
+        const response = await getEventByTagService();
+        if (response) {
+          console.log(response.data);
+        }
+      } catch (err) {
+        message.error(err.message);
+      }
+    }
 
     getEvents();
+    getEventsUsingTags();
   }, [])
 
   

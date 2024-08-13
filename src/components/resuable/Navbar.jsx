@@ -22,7 +22,7 @@ const Navbar = () => {
             key: '0',
         },
         sessionStorage.getItem('USER_AUTH_ROLE') !== "admin" && {
-            label: (<div className="px-2 py-[3px] flex items-center gap-2"><CalendarOutlined />My Events</div>),
+            label: (<div className="px-2 py-[3px] flex items-center gap-2"><CalendarOutlined />Booked Events</div>),
             key: '1',
         },
         {

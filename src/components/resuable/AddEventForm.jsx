@@ -1,44 +1,109 @@
-import React from 'react';
-import { Form, Input, Button, DatePicker, TimePicker, Select, InputNumber, Upload } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import React, { useEffect } from 'react';
+import { Form, Input, Button, DatePicker, TimePicker, Select, InputNumber, Upload, Image, message } from 'antd';
+import { UploadOutlined, DeleteOutlined } from '@ant-design/icons';
+import moment from 'moment';
+import { deleteEventService } from '../../services/eventServices';
+import { useNavigate } from 'react-router-dom';
 
 const { TextArea } = Input;
 const { Option } = Select;
 
-const AddEventForm = ({ onFinish, handleImageUpload, loading }) => {
+const AddEventForm = ({ onFinish, handleImageUpload, loading, eventDetail, isUpdate }) => {
 
+    const [form] = Form.useForm();
+    const navigate = useNavigate(null);
+
+    useEffect(() => {
+        if (eventDetail) {
+            form.setFieldsValue({
+                posterImage: eventDetail.posterImage,
+                title: eventDetail.title,
+                description: eventDetail.description,
+                date: eventDetail.date ? moment(eventDetail.date) : null,
+                time: eventDetail.time ? moment(eventDetail.time, 'HH:mm') : null,
+                location: eventDetail.location,
+                organizerCompany: eventDetail.organizerCompany,
+                capacity: eventDetail.capacity,
+                price: eventDetail.price,
+                tag: eventDetail.tag,
+                status: eventDetail.status,
+            });
+        }
+    }, [eventDetail, form])
+
+    const handleDelete = async () => {
+        try {
+            const response = await deleteEventService(eventDetail._id);
+            if (response) {
+                message.success('Event deleted successfully!');
+                navigate('/');
+            }
+        } catch (err) {
+            message.error(err?.response?.data?.data?.error || err?.message)
+        }
+    }
 
     return (
-        <div className="max-w-xl mx-auto p-8">
+        <div className="max-w-xl mx-auto mt-20 p-8">
             <Form
                 layout="vertical"
                 onFinish={onFinish}
                 className="space-y-4"
+                form={form}
             >
                 {/* Poster Image */}
-                <Form.Item
-                    name="posterImage"
-                    label="Poster Image"
-                    rules={[{ required: true, message: 'Please upload a poster image!' }]}
-                >
-                    <Upload
-                        listType="picture"
-                        maxCount={1}
-                        customRequest={({ onSuccess }) => onSuccess('ok')}
-                        onChange={handleImageUpload}
-                    >
-                        <Button icon={<UploadOutlined />}>Upload Poster Image</Button>
-                    </Upload>
-                </Form.Item>
+                {
+                    !isUpdate && (
+                        <Form.Item
+                            name="posterImage"
+                            label="Poster Image"
+                            rules={[{ required: true, message: 'Please upload a poster image!' }]}
+                        >
+                            <Upload
+                                listType="picture"
+                                maxCount={1}
+                                customRequest={({ onSuccess }) => onSuccess('ok')}
+                                onChange={handleImageUpload}
+                            >
+                                <Button icon={<UploadOutlined />}>Upload Poster Image</Button>
+                            </Upload>
+                        </Form.Item>
+                    )
+                }
+
+                {
+                    isUpdate && (
+                        <>
+                            <Button danger className=' float-end mr-2' onClick={handleDelete}>
+                                <DeleteOutlined />
+                                Delete Event
+                            </Button>
+                            <Image
+                                src={eventDetail?.posterImage}
+                                width={500}
+                                alt="Poster"
+                                preview={false}
+                            />
+
+                        </>
+
+                    )
+                }
+
 
                 {/* Title */}
+
                 <Form.Item
                     name="title"
                     label="Title"
                     rules={[{ required: true, message: 'Please enter the title!' }]}
                 >
-                    <Input placeholder="Enter the event title" />
+                    <Input
+                        placeholder="Enter the event title"
+                        value={eventDetail?.title}
+                    />
                 </Form.Item>
+
 
                 {/* Description */}
                 <Form.Item
@@ -115,9 +180,9 @@ const AddEventForm = ({ onFinish, handleImageUpload, loading }) => {
                     label="Tag"
                 >
                     <Select placeholder="Select a tag">
-                        <Option value="music">Music</Option>
-                        <Option value="standup comedy">Comedy</Option>
-                        <Option value="standup comedy">Workshop</Option>
+                        <Option value="Music">Music</Option>
+                        <Option value="Comedy">Comedy</Option>
+                        <Option value="Workshop">Workshop</Option>
                     </Select>
                 </Form.Item>
 
@@ -137,7 +202,7 @@ const AddEventForm = ({ onFinish, handleImageUpload, loading }) => {
                 {/* Submit Button */}
                 <Form.Item>
                     <Button type="primary" htmlType="submit" className="w-full" loading={loading}>
-                        Submit
+                        {isUpdate ? 'Update' : 'submit'}
                     </Button>
                 </Form.Item>
             </Form>
