@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
-import { Card, Button, Modal, InputNumber } from 'antd';
+import { Card, Button, Modal, InputNumber, message } from 'antd';
 import { CalendarOutlined, EnvironmentOutlined, WalletOutlined } from '@ant-design/icons';
 import EventGuideCard from './EventGuideCard';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import TagOutlined from "../assets/tag.svg";
+import { bookEventService } from '../services/eventServices';
+import moment from 'moment';
+import { generateTransactionId } from '../helper';
 
 const EventDetailUI = ({ event }) => {
     const navigate = useNavigate(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [ticketQuantity, setTicketQuantity] = useState(1);
+    const [loading, setLoading] = useState(false);
 
     const handleBuyNow = () => {
         if (sessionStorage.getItem('USER_AUTH_TOKEN') && sessionStorage.getItem('USER_AUTH_ROLE')) {
@@ -27,6 +31,28 @@ const EventDetailUI = ({ event }) => {
     const handleTicketChange = (value) => {
         setTicketQuantity(value);
     };
+
+    const handleConfirmBooking = async () => {
+        setLoading(true);
+        try {
+            const payload = {
+                paymentId: generateTransactionId(), // Duplicately generating transaction id
+                eventId: event._id,
+                noOfSeats: ticketQuantity,
+                bookingDate: moment().format('YYYY-MM-DD')
+            }
+            const response = await bookEventService(payload);
+            if (response) {
+                setLoading(false);
+                message.success('Event booking successful');
+                setIsModalVisible(false);
+                navigate('/event/my-booking');
+            }
+        } catch (err) {
+            setLoading(false);
+            message.error(err?.response?.data?.data?.error || err?.message)
+        }
+    }
 
     const totalPrice = ticketQuantity * event.price;
     return (
@@ -73,7 +99,11 @@ const EventDetailUI = ({ event }) => {
                                 <WalletOutlined className="text-lg" />
                                 <span className="text-xl font-bold">₹ {event.price} Onwards</span>
                             </div>
-                            <Button type="primary" onClick={handleBuyNow}>Buy Now</Button>
+                            {
+                                event.capacity <= 0 ? <h1 className='text-lg font-bold text-red-500'>SOLD OUT</h1> : (
+                                    <Button type="primary" onClick={handleBuyNow} >Buy Now</Button>
+                                )
+                            }
                         </div>
                     </Card>
                     <EventGuideCard />
@@ -89,7 +119,7 @@ const EventDetailUI = ({ event }) => {
                     <Button key="cancel" onClick={handleCancel}>
                         Cancel
                     </Button>,
-                    <Button key="buy" type="primary">
+                    <Button key="buy" type="primary" onClick={handleConfirmBooking} loading={loading}>
                         Proceed to Payment
                     </Button>
                 ]}

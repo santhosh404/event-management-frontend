@@ -4,6 +4,7 @@ import SignIn from './pages/auth/SignIn'
 import Signup from './pages/auth/SignUp'
 import EventDetail from './pages/EventDetail';
 import Home from './pages/Home'
+import MyBooking from './pages/MyBooking';
 
 export const publicRoutes = [
     {
@@ -31,11 +32,15 @@ export const publicRoutes = [
 
 export const privateRoutes = [
     { 
-        path: '/add-event', 
+        path: '/event/add-event', 
         component: AddEvent
     },
     {
         path: 'event/:id',
         component: EventDetail
     }, 
+    {
+        path: 'event/my-booking',
+        component: MyBooking
+    }
 ]

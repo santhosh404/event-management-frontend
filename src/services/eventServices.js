@@ -79,7 +79,18 @@ export const getEventByIdService = async (id) => {
 
 export const getEventByTagService = async () => {
     try {
-        const response = await axios.get(`${BASE_URL}/event/get-event/tag`, {
+        const response = await axios.get(`${BASE_URL}/event/tags`);
+        if (response) {
+            return response.data;
+        }
+    } catch (err) {
+        throw err;
+    }
+}
+
+export const bookEventService = async (payload) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/book/book-event`, payload, {
             headers: {
                 Authorization: `Bearer ${sessionStorage.getItem('USER_AUTH_TOKEN')}`,
             },
@@ -91,3 +102,29 @@ export const getEventByTagService = async () => {
         throw err;
     }
 }
+
+export const filterByTagName = async (tag) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/event/filter/?tag=${tag}`);
+        if (response) {
+            return response.data;
+        }
+    } catch (err) {
+        throw err;
+    }
+}
+
+export const getUserBookingsService = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/event/user/booking`, {
+            headers: {
+                Authorization: `Bearer ${sessionStorage.getItem('USER_AUTH_TOKEN')}`,
+            },
+        });
+        if (response) {
+            return response.data;
+        }
+    } catch (err) {
+        throw err;
+    }
+} 

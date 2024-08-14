@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../components/resuable/Navbar'
-import { getAllEventsService, getEventByTagService } from '../services/eventServices'
+import { filterByTagName, getAllEventsService, getEventByTagService } from '../services/eventServices'
 import { message, Tag } from 'antd';
 import EventCard from '../components/resuable/EventCard';
-import {
-  AppstoreOutlined,
-  CustomerServiceOutlined,
-  SmileOutlined,
-  ToolOutlined,
-} from '@ant-design/icons';
 import Filter from '../components/resuable/Filter';
 
 export default function Home() {
@@ -16,11 +10,25 @@ export default function Home() {
   const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [activeFilter, setActiveFilter] = useState('All Events');
+  const [tags, setTags] = useState({})
 
-  const handleFilterChange = (filter) => {
+  const handleFilterChange = async (filter) => {
     setActiveFilter(filter);
 
+    if(filter === 'All Events') {
+      setFilteredEvents(events);
+      return;
+    }
+
     // Filter logics here
+    try {
+      const response = await filterByTagName(filter);
+      if(response) {
+        setFilteredEvents(response.data);
+      }
+    } catch (err) {
+      message.error(err.message);
+    }
   }
 
   useEffect(() => {
@@ -29,6 +37,7 @@ export default function Home() {
         const response = await getAllEventsService();
         if (response) {
           setEvents(response.data);
+          setFilteredEvents(response.data);
         }
       } catch (err) {
         message.error(err.message);
@@ -39,14 +48,15 @@ export default function Home() {
         const response = await getEventByTagService();
         if (response) {
           console.log(response.data);
+          setTags(response.data);
         }
       } catch (err) {
         message.error(err.message);
       }
     }
 
-    getEvents();
     getEventsUsingTags();
+    getEvents();
   }, [])
 
   
@@ -60,12 +70,13 @@ export default function Home() {
          <Filter 
           activeFilter={activeFilter}
           handleFilterChange={handleFilterChange}
+          tags={tags}
          />
         </div>
 
-        {events.length === 0 && <p>No events found.</p>}
+        {filteredEvents.length === 0 && <p className='flex justify-center'>No events found.</p>}
         <div className='flex justify-center gap-4 flex-wrap mb-10 mt-4 items-center'>
-          {events.length > 0 && events.map((event) => (
+          {filteredEvents.length > 0 && filteredEvents.map((event) => (
             <EventCard
               key={event._id}
               eventData={event}

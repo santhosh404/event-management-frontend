@@ -4,7 +4,7 @@ import { CalendarOutlined, EnvironmentOutlined, WalletOutlined } from '@ant-desi
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
-const DisplayEventCard = ({ eventData }) => {
+const DisplayEventCard = ({ eventData, isMyBookings }) => {
     const navigate = useNavigate(null);
     return (
         <motion.div
@@ -39,15 +39,29 @@ const DisplayEventCard = ({ eventData }) => {
                             </div>
                         </div>
                     }
-                /> 
+                />
                 <div className="mt-4 flex justify-between absolute bottom-5 w-[87%] px-3 items-center py-2 rounded-[20px] bg-gray-100">
-                    <div className="text-lg font-bold flex items-center">
-                        <WalletOutlined className="mr-2" />
-                        <span>₹ {eventData.price}</span>
-                    </div>
-                    <Button type="secondary" size="large">
-                        Buy Now
-                    </Button>
+
+                    {
+                        isMyBookings ? (
+                            <div className='flex gap-1'>
+                                <h1 className='font-bold'>Note:</h1>
+                                <small>Your Ticket has been booked booked this event. Please check mail and download your ticket. Enjoy your event!</small>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="text-lg font-bold flex items-center">
+                                    <WalletOutlined className="mr-2" />
+                                    <span>₹ {eventData.price}</span>
+                                </div>
+                                <Button type="secondary" size="large">
+                                    Buy Now
+                                </Button>
+                            </>
+
+                        )
+                    }
+
                 </div>
             </Card>
         </motion.div>

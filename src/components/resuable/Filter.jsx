@@ -7,10 +7,10 @@ import {
     ToolOutlined,
 } from '@ant-design/icons';
 
-const Filter = ({ activeFilter, handleFilterChange }) => {
+const Filter = ({ activeFilter, handleFilterChange, tags }) => {
     return (
         <div className='flex justify-center gap-2 my-5'>
-            {['All Events', 'Music', 'Comedy', 'Workshops'].map((category) => {
+            {['All Events', 'Music', 'Comedy', 'Workshop'].map((category) => {
                 let icon;
 
                 switch (category) {
@@ -23,7 +23,7 @@ const Filter = ({ activeFilter, handleFilterChange }) => {
                     case 'Comedy':
                         icon = <SmileOutlined />;
                         break;
-                    case 'Workshops':
+                    case 'Workshop':
                         icon = <ToolOutlined />;
                         break;
                     default:
@@ -38,7 +38,10 @@ const Filter = ({ activeFilter, handleFilterChange }) => {
                         className="cursor-pointer px-3 py-1 bg-white flex items-center"
                     >
                         {icon}
-                        <h1 className='text-md ml-2 font-semibold'>{category} (21)</h1>
+                        <h1 className='text-md ml-2 font-semibold'>{category} ({
+                            category === 'All Events' ? tags.totalCount :
+                            tags?.tag?.find(t => t.tagName.toLowerCase() === category.toLowerCase())?.tagCount
+                        })</h1>
                     </Tag>
                 );
             })}
