@@ -1,7 +1,7 @@
 import axios from "axios"
 
 
-const BASE_URL = 'http://localhost:4000'
+const BASE_URL = 'https://event-management-backend-r2cl.onrender.com'
 
 export const signUpService = async (payload) => {
     try {

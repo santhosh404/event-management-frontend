@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:4000/api/v1";
+const BASE_URL = "https://event-management-backend-r2cl.onrender.com/api/v1";
 export const addEventService = async (payload) => {
     try {
         const response = await axios.post(`${BASE_URL}/event/create-event`, payload, {
